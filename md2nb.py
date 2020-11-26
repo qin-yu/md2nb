@@ -40,8 +40,12 @@ def md2nb(file_path, extension='.md'):
     # `str()` prints strings with single quotes, while `json.dumps()` prints with double quotes.
     with open(file_path, 'r') as f_md: t_md = f_md.readlines()
     t_nb = template[:78] + json.dumps(t_md) + template[78:]
+    t_nb = json.loads(t_nb)  # 'load string'
     assert len(extension) > 0  # TODO: use try...catch... here
-    with open(file_path[:-len(extension)] + '.ipynb', 'w') as f_nb: f_nb.writelines(t_nb)
+    with open(file_path[:-len(extension)] + '.ipynb', 'w') as f_nb:
+        # Making JSON human readable (aka "pretty printing") is as easy as passing an integer value for the indent parameter
+        # https://stackabuse.com/reading-and-writing-json-to-a-file-in-python/
+        json.dump(t_nb, f_nb, indent=2)
     return
 
 def md2nb_all(extension='.md'):
