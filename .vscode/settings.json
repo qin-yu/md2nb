@@ -1,0 +1,8 @@
+{
+    "markdown.extension.toc.omittedFromToc": {
+        "README.md": [
+            "# `md2nb` - Converting Markdown Files to Jupyter Notebook",
+            "# Table of Contents"
+        ]
+    }
+}
