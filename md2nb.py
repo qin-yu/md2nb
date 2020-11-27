@@ -36,9 +36,11 @@ template = '''{
  "nbformat_minor": 4
 }'''
 
+
 def md2nb(file_path, extension='.md'):
     # `str()` prints strings with single quotes, while `json.dumps()` prints with double quotes.
-    with open(file_path, 'r') as f_md: t_md = f_md.readlines()
+    with open(file_path, 'r') as f_md:
+        t_md = f_md.readlines()
     t_nb = template[:78] + json.dumps(t_md) + template[78:]
     t_nb = json.loads(t_nb)  # 'load string'
     assert len(extension) > 0  # TODO: use try...catch... here
@@ -48,12 +50,14 @@ def md2nb(file_path, extension='.md'):
         json.dump(t_nb, f_nb, indent=2)
     return
 
+
 def md2nb_all(extension='.md'):
     file_paths = [file_path for file_path in glob.glob(f"*{extension}")]
     print(f"The following files are about to be converted: {file_paths}")
     for file_path in file_paths:
         md2nb(file_path, extension=extension)
     return
+
 
 if __name__ == '__main__':
     md2nb_all()
