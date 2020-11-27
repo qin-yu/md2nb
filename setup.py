@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="md2nb",  # Replace with your own username
-    version="0.0.1",
+    version="0.0.2",
     author="Qin Yu",
     author_email="qin.yu@embl.de",
     license="bsd-3-clause",
@@ -15,6 +15,7 @@ setuptools.setup(
     url="https://github.com/qin-yu/md2nb",
     packages=setuptools.find_packages(),
     # py_modules=["md2nb"],
+    install_requires=['chardet'],
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: BSD License",

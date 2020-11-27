@@ -1,5 +1,6 @@
 import glob
 import json
+from chardet.universaldetector import UniversalDetector
 
 __copyright__ = "Copyright 2020, Qin Yu"
 __author__ = "Qin Yu"
@@ -37,9 +38,22 @@ template = '''{
 }'''
 
 
+def detect_encoding(file_path):
+    detector = UniversalDetector()
+    detector.reset()
+    with open(file_path, 'rb') as f_md:
+        for line in f_md:
+            detector.feed(line)
+            if detector.done:
+                break
+        detector.close()
+
+    return detector.result['encoding']
+
+
 def md2nb(file_path, extension='.md'):
     # `str()` prints strings with single quotes, while `json.dumps()` prints with double quotes.
-    with open(file_path, 'r') as f_md:
+    with open(file_path, 'r', encoding=detect_encoding(file_path)) as f_md:
         t_md = f_md.readlines()
     t_nb = template[:78] + json.dumps(t_md) + template[78:]
     t_nb = json.loads(t_nb)  # 'load string'

@@ -10,9 +10,9 @@ This is a picture of [EMBL Heidelberg](https://www.embl.de/):
 
 ## About <abbr title="European Molecular Biology Laboratory">EMBL</abbr>
 > The European Molecular Biology Laboratory (EMBL)
-> is one of the worldâ€™s leading research institutions,
-> and Europeâ€™s flagship laboratory for the life sciences.
+> is one of the world¡¯s leading research institutions,
+> and Europe¡¯s flagship laboratory for the life sciences.
 
 ## Test Some Non-latin Characters
-Qin Yu - aka ä½™æ²<br>
-2020åä¸€æœˆ27æ—¥
+Qin Yu - aka ÓàÇß<br>
+2020Ê®Ò»ÔÂ27ÈÕ
