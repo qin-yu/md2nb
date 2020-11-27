@@ -15,6 +15,7 @@ setuptools.setup(
     url="https://github.com/qin-yu/md2nb",
     packages=setuptools.find_packages(),
     # py_modules=["md2nb"],
+    install_requires=['chardet'],
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: BSD License",
