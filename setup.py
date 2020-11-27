@@ -14,18 +14,18 @@ setuptools.setup(
     long_description_content_type="text/markdown",
     url="https://github.com/qin-yu/md2nb",
     packages=setuptools.find_packages(),
-    py_modules=["md2nb"],
+    # py_modules=["md2nb"],
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: BSD License",
         "Operating System :: OS Independent",
         "Topic :: Text Processing :: Markup :: Markdown"
     ],
-    keywords="markdown, jupyter, notebook, md, ipynb",
+    keywords="markdown jupyter notebook md ipynb",
     python_requires='>=3.6',
     entry_points={
         'console_scripts': [
-            'md2nb=md2nb:md2nb_all',
+            'md2nb=md2nb.md2nb:md2nb_all',
         ],
     },
 )
