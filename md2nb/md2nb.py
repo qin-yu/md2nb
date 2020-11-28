@@ -100,12 +100,11 @@ def md2nb_all(directory='.', extension='.md', recursive=False):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        "filenames", nargs='*', type=is_file, help="files to be converted")
+        "filenames", nargs='*', type=is_file, help="paths for files to be converted")
     parser.add_argument(
         "--dir", nargs='+', type=is_dir, help="directory containing the Markdown files")
-    # TODO: Allow more than one extension
     parser.add_argument(
-        "--ext", default='.md', help="target only files with this filename extension", dest="extension")
+        "--ext", nargs='+', default=['.md'], help="target only files ending with these", dest="extension")
     parser.add_argument("-r", "--recursive", action='store_true',
                         help="recursively apply `md2nb` to all subdirectories")
     args = parser.parse_args()
@@ -116,13 +115,14 @@ def main():
     if args.filenames:
         print(f"Converting the following user-specified files:")
         print('\t' + '\n\t'.join(args.filenames))
-        for file_path in args.filenames:
+        for file_path in set(args.filenames):
             md2nb(file_path)
 
     if args.dir:
-        for dir_path in args.dir:
-            md2nb_all(directory=dir_path,
-                      extension=args.extension, recursive=args.recursive)
+        for dir_path in set(args.dir):
+            for file_ext in set(args.extension):
+                md2nb_all(directory=dir_path,
+                          extension=file_ext, recursive=args.recursive)
 
 
 if __name__ == '__main__':
