@@ -84,14 +84,12 @@ def md2nb(file_path, extension='.md'):
     return
 
 
-def md2nb_all(directory='.', extension='.md'):
+def md2nb_all(directory='.', extension='.md', recursive=False):
     if directory[-1] == '/' and len(directory) > 1:
         directory = directory[:-1]
 
-    file_paths = [
-        file_path for file_path
-        in glob.glob(f"{directory}/*{extension}")
-    ]
+    file_paths = glob.glob(f"{directory}/**/*{extension}",
+                           recursive=True) if recursive else glob.glob(f"{directory}/*{extension}")
     print(f"Converting '{extension}' files within {directory}/:")
     print('\t' + '\n\t'.join(file_paths))
     for file_path in file_paths:
@@ -108,6 +106,8 @@ def main():
     # TODO: Allow more than one extension
     parser.add_argument(
         "--ext", default='.md', help="target only files with this filename extension", dest="extension")
+    parser.add_argument("-r", "--recursive", action='store_true',
+                        help="recursively apply `md2nb` to all subdirectories")
     args = parser.parse_args()
 
     if len(sys.argv) == 1:
@@ -121,7 +121,8 @@ def main():
 
     if args.dir:
         for dir_path in args.dir:
-            md2nb_all(directory=dir_path, extension=args.extension)
+            md2nb_all(directory=dir_path,
+                      extension=args.extension, recursive=args.recursive)
 
 
 if __name__ == '__main__':
