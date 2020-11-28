@@ -1,5 +1,7 @@
+import sys
 import glob
 import json
+import argparse
 from chardet.universaldetector import UniversalDetector
 
 __copyright__ = "Copyright 2020, Qin Yu"
@@ -65,13 +67,45 @@ def md2nb(file_path, extension='.md'):
     return
 
 
-def md2nb_all(extension='.md'):
-    file_paths = [file_path for file_path in glob.glob(f"*{extension}")]
-    print(f"The following files are about to be converted: {file_paths}")
+def md2nb_all(directory='.', extension='.md'):
+    if directory[-1] == '/' and len(directory) > 1:
+        directory = directory[:-1]
+
+    file_paths = [
+        file_path for file_path
+        in glob.glob(f"{directory}/*{extension}")
+    ]
+    print(f"Converting '{extension}' files within {directory}/:")
+    print('\t' + '\n\t'.join(file_paths))
     for file_path in file_paths:
         md2nb(file_path, extension=extension)
     return
 
 
+def main():
+    parser = argparse.ArgumentParser()
+    # TODO: Check these are actual file paths
+    parser.add_argument("filenames", help="files to be converted", nargs='*')
+    # TODO: Check these are actual directory paths
+    # TODO: Allow more than one directory
+    parser.add_argument(
+        "--dir", help="directory containing the Markdown files")
+    parser.add_argument(
+        "--ext", help="target only files with this filename extension", dest="extension", default='.md')
+    args = parser.parse_args()
+
+    if len(sys.argv) == 1:
+        parser.print_help()
+
+    if args.filenames:
+        print(f"Converting the following files:")
+        print('\t' + '\n\t'.join(args.filenames))
+        for file_path in args.filenames:
+            md2nb(file_path)
+
+    if args.dir:
+        md2nb_all(directory=args.dir, extension=args.extension)
+
+
 if __name__ == '__main__':
-    md2nb_all()
+    main()

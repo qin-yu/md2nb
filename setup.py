@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="md2nb",  # Replace with your own username
-    version="0.0.2",
+    version="0.1.0",
     author="Qin Yu",
     author_email="qin.yu@embl.de",
     license="bsd-3-clause",
@@ -26,7 +26,7 @@ setuptools.setup(
     python_requires='>=3.6',
     entry_points={
         'console_scripts': [
-            'md2nb=md2nb.md2nb:md2nb_all',
+            'md2nb=md2nb.md2nb:main',
         ],
     },
 )
