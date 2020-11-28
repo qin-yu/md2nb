@@ -1,3 +1,4 @@
+import os
 import sys
 import glob
 import json
@@ -38,6 +39,22 @@ template = '''{
  "nbformat": 4,
  "nbformat_minor": 4
 }'''
+
+
+def is_file(string):
+    if not os.path.isfile(string):
+        msg = "%r is not a valid file path" % string
+        raise argparse.ArgumentTypeError(msg)
+    else:
+        return string
+
+
+def is_dir(string):
+    if not os.path.isdir(string):
+        msg = "%r is not a valid directory path" % string
+        raise argparse.ArgumentTypeError(msg)
+    else:
+        return string
 
 
 def detect_encoding(file_path):
@@ -84,27 +101,27 @@ def md2nb_all(directory='.', extension='.md'):
 
 def main():
     parser = argparse.ArgumentParser()
-    # TODO: Check these are actual file paths
-    parser.add_argument("filenames", help="files to be converted", nargs='*')
-    # TODO: Check these are actual directory paths
-    # TODO: Allow more than one directory
     parser.add_argument(
-        "--dir", help="directory containing the Markdown files")
+        "filenames", nargs='*', type=is_file, help="files to be converted")
     parser.add_argument(
-        "--ext", help="target only files with this filename extension", dest="extension", default='.md')
+        "--dir", nargs='+', type=is_dir, help="directory containing the Markdown files")
+    # TODO: Allow more than one extension
+    parser.add_argument(
+        "--ext", default='.md', help="target only files with this filename extension", dest="extension")
     args = parser.parse_args()
 
     if len(sys.argv) == 1:
         parser.print_help()
 
     if args.filenames:
-        print(f"Converting the following files:")
+        print(f"Converting the following user-specified files:")
         print('\t' + '\n\t'.join(args.filenames))
         for file_path in args.filenames:
             md2nb(file_path)
 
     if args.dir:
-        md2nb_all(directory=args.dir, extension=args.extension)
+        for dir_path in args.dir:
+            md2nb_all(directory=dir_path, extension=args.extension)
 
 
 if __name__ == '__main__':
