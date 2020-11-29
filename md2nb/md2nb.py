@@ -1,5 +1,8 @@
+import os
+import sys
 import glob
 import json
+import argparse
 from chardet.universaldetector import UniversalDetector
 
 __copyright__ = "Copyright 2020, Qin Yu"
@@ -38,6 +41,22 @@ template = '''{
 }'''
 
 
+def is_file(string):
+    if not os.path.isfile(string):
+        msg = "%r is not a valid file path" % string
+        raise argparse.ArgumentTypeError(msg)
+    else:
+        return string
+
+
+def is_dir(string):
+    if not os.path.isdir(string):
+        msg = "%r is not a valid directory path" % string
+        raise argparse.ArgumentTypeError(msg)
+    else:
+        return string
+
+
 def detect_encoding(file_path):
     detector = UniversalDetector()
     detector.reset()
@@ -65,13 +84,46 @@ def md2nb(file_path, extension='.md'):
     return
 
 
-def md2nb_all(extension='.md'):
-    file_paths = [file_path for file_path in glob.glob(f"*{extension}")]
-    print(f"The following files are about to be converted: {file_paths}")
+def md2nb_all(directory='.', extension='.md', recursive=False):
+    if directory[-1] == '/' and len(directory) > 1:
+        directory = directory[:-1]
+
+    file_paths = glob.glob(f"{directory}/**/*{extension}",
+                           recursive=True) if recursive else glob.glob(f"{directory}/*{extension}")
+    print(f"Converting '{extension}' files within {directory}/:")
+    print('\t' + '\n\t'.join(file_paths))
     for file_path in file_paths:
         md2nb(file_path, extension=extension)
     return
 
 
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "filenames", nargs='*', type=is_file, help="paths for files to be converted")
+    parser.add_argument(
+        "--dir", nargs='+', type=is_dir, help="directory containing the Markdown files")
+    parser.add_argument(
+        "--ext", nargs='+', default=['.md'], help="target only files ending with these", dest="extension")
+    parser.add_argument("-r", "--recursive", action='store_true',
+                        help="recursively apply `md2nb` to all subdirectories")
+    args = parser.parse_args()
+
+    if len(sys.argv) == 1:
+        parser.print_help()
+
+    if args.filenames:
+        print(f"Converting the following user-specified files:")
+        print('\t' + '\n\t'.join(args.filenames))
+        for file_path in set(args.filenames):
+            md2nb(file_path)
+
+    if args.dir:
+        for dir_path in set(args.dir):
+            for file_ext in set(args.extension):
+                md2nb_all(directory=dir_path,
+                          extension=file_ext, recursive=args.recursive)
+
+
 if __name__ == '__main__':
-    md2nb_all()
+    main()
