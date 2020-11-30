@@ -90,7 +90,8 @@ def md2nb_all(directory='.', extension='.md', recursive=False):
 
     file_paths = glob.glob(f"{directory}/**/*{extension}",
                            recursive=True) if recursive else glob.glob(f"{directory}/*{extension}")
-    print(f"Converting '{extension}' files within {directory}/:")
+    print(f"Converting '{extension}' files within {directory}/ and all subdirectories:") if recursive else print(
+        f"Converting '{extension}' files within {directory}/:")
     print('\t' + '\n\t'.join(file_paths))
     for file_path in file_paths:
         md2nb(file_path, extension=extension)
