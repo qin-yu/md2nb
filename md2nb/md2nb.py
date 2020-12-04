@@ -70,14 +70,19 @@ def detect_encoding(file_path):
     return detector.result['encoding']
 
 
-def md2nb(file_path, extension='.md'):
+def md2nb(file_path, extension=None):
+    if extension is None:
+        _, extension = os.path.splitext(file_path)
+
     # `str()` prints strings with single quotes, while `json.dumps()` prints with double quotes.
     with open(file_path, 'r', encoding=detect_encoding(file_path)) as f_md:
         t_md = f_md.readlines()
     t_nb = template[:78] + json.dumps(t_md) + template[78:]
     t_nb = json.loads(t_nb)  # 'load string'
-    assert len(extension) > 0  # TODO: use try...catch... here
-    with open(file_path[:-len(extension)] + '.ipynb', 'w') as f_nb:
+
+    file_out_path = file_path + \
+        '.ipynb' if extension == '' else file_path[:-len(extension)] + '.ipynb'
+    with open(file_out_path, 'w') as f_nb:
         # Making JSON human readable (aka "pretty printing") is as easy as passing an integer value for the indent parameter
         # https://stackabuse.com/reading-and-writing-json-to-a-file-in-python/
         json.dump(t_nb, f_nb, indent=2)
@@ -98,6 +103,16 @@ def md2nb_all(directory='.', extension='.md', recursive=False):
     return
 
 
+def file_with_extension_exist(directory='.', extension='.m2n', recursive=False):
+    if directory[-1] == '/' and len(directory) > 1:
+        directory = directory[:-1]
+
+    file_paths = glob.glob(f"{directory}/**/*{extension}",
+                           recursive=True) if recursive else glob.glob(f"{directory}/*{extension}")
+
+    return file_paths != []
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument(
@@ -105,7 +120,7 @@ def main():
     parser.add_argument(
         "--dir", nargs='+', type=is_dir, help="directory containing the Markdown files")
     parser.add_argument(
-        "--ext", nargs='+', default=['.md'], help="target only files ending with these", dest="extension")
+        "--ext", nargs='+', help="target only files ending with these", dest="extension")
     parser.add_argument("-r", "--recursive", action='store_true',
                         help="recursively apply `md2nb` to all subdirectories")
     args = parser.parse_args()
@@ -120,6 +135,15 @@ def main():
             md2nb(file_path)
 
     if args.dir:
+        no_m2n_files = True
+        if args.extension is None:
+            for dir_path in set(args.dir):
+                if file_with_extension_exist(directory=dir_path, extension='m2n', recursive=args.recursive):
+                    no_m2n_files = False
+            if no_m2n_files:
+                args.extension = ['.md']
+            else:
+                args.extension = ['.m2n']
         for dir_path in set(args.dir):
             for file_ext in set(args.extension):
                 md2nb_all(directory=dir_path,

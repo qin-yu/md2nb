@@ -24,13 +24,18 @@ $ md2nb
 ```
 
 # Usage
-The simplest example - in the root directory of this repo:
+As the simplest example, in the root directory of this repo, this will convert all `.md` files to `.ipynb` files (if there is no `.m2n` file found in the specified directories):
 ```bash
-$ md2nb --dir . -r
-Converting '.md' files within ./ and all subdirectories:
+$ md2nb --dir .
+Converting '.md' files within ./:
 	./README.md
-	./test/example.md
-	./test/example-gB18030.md
+```
+But if `.m2n` files are found in the specified directories, e.g. here in the `./test/` folder, then only `.m2n` files are converted. This is because you may only want to convert some Markdown files to Jupyter notebooks, and you can mark these files by making their extension `.m2n`:
+```bash
+$ md2nb --dir ./test
+Converting '.m2n' files within ./test/:
+	./test/example.m2n
+	./test/example-gB18030.m2n
 ```
 
 In short, use `md2nb PATH_TO_FILE1 PATH_TO_FILE2`, or `md2nb --dir PATH_TO_DIRECTORY1 PATH_TO_DIRECTORY2`. There are two recommended ways of using `md2nb`:
@@ -47,5 +52,5 @@ In short, use `md2nb PATH_TO_FILE1 PATH_TO_FILE2`, or `md2nb --dir PATH_TO_DIREC
 3. In fact, these two ways can be combined. For example:
     ```bash
     # to convert README, LICENSE, all .md and .txt files in . and ./doc/
-    $ md2nb README LICENSE --dir . doc --ext .md .txt
+    $ md2nb README.md LICENSE --dir . test --ext .md .txt
     ```
