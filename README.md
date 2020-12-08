@@ -2,7 +2,7 @@
 [![BSD license](https://img.shields.io/badge/license-BSD%203%20Clause-blue.svg)](https://github.com/qin-yu/md2nb/blob/main/LICENSE)
 ![Python v3.6.0](https://img.shields.io/badge/Python-v3.6.0-brightgreen.svg)
 
-Created by [Qin Yu](https://github.com/qin-yu), Nov 2020 - Nov 2020
+Created by [Qin Yu](https://github.com/qin-yu), Nov 2020 - Dec 2020
 
 ## Table of Contents
 - [Manifesto](#manifesto)
@@ -39,6 +39,7 @@ Converting '.m2n' files within ./test/:
 ```
 
 In short, use `md2nb PATH_TO_FILE1 PATH_TO_FILE2`, or `md2nb --dir PATH_TO_DIRECTORY1 PATH_TO_DIRECTORY2`. There are two recommended ways of using `md2nb`:
+
 1. `md2nb` converts all files with `--ext` specified extensions in the `--dir` specified directories into `.ipynb` files with a single Markdown block. For example:
     ```bash
     # to convert all Markdown and text files in the current directory and all of its subdirectories
@@ -54,3 +55,8 @@ In short, use `md2nb PATH_TO_FILE1 PATH_TO_FILE2`, or `md2nb --dir PATH_TO_DIREC
     # to convert README, LICENSE, all .md and .txt files in . and ./doc/
     $ md2nb README.md LICENSE --dir . test --ext .md .txt
     ```
+
+To check what files are going to be converted:
+```bash
+$ md2nb --dir . -r --dry-run
+```

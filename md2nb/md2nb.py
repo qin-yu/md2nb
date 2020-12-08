@@ -70,7 +70,7 @@ def detect_encoding(file_path):
     return detector.result['encoding']
 
 
-def md2nb(file_path, extension=None):
+def md2nb(file_path, extension=None, dry=False):
     if extension is None:
         _, extension = os.path.splitext(file_path)
 
@@ -82,14 +82,15 @@ def md2nb(file_path, extension=None):
 
     file_out_path = file_path + \
         '.ipynb' if extension == '' else file_path[:-len(extension)] + '.ipynb'
-    with open(file_out_path, 'w') as f_nb:
-        # Making JSON human readable (aka "pretty printing") is as easy as passing an integer value for the indent parameter
-        # https://stackabuse.com/reading-and-writing-json-to-a-file-in-python/
-        json.dump(t_nb, f_nb, indent=2)
+    if not dry:
+        with open(file_out_path, 'w') as f_nb:
+            # Making JSON human readable (aka "pretty printing") is as easy as passing an integer value for the indent parameter
+            # https://stackabuse.com/reading-and-writing-json-to-a-file-in-python/
+            json.dump(t_nb, f_nb, indent=2)
     return
 
 
-def md2nb_all(directory='.', extension='.md', recursive=False):
+def md2nb_all(directory='.', extension='.md', recursive=False, dry=False):
     if directory[-1] == '/' and len(directory) > 1:
         directory = directory[:-1]
 
@@ -99,7 +100,7 @@ def md2nb_all(directory='.', extension='.md', recursive=False):
         f"Converting '{extension}' files within {directory}/:")
     print('\t' + '\n\t'.join(file_paths))
     for file_path in file_paths:
-        md2nb(file_path, extension=extension)
+        md2nb(file_path, extension=extension, dry=dry)
     return
 
 
@@ -123,6 +124,8 @@ def main():
         "--ext", nargs='+', help="target only files ending with these", dest="extension")
     parser.add_argument("-r", "--recursive", action='store_true',
                         help="recursively apply `md2nb` to all subdirectories")
+    parser.add_argument(
+        "--dry-run", action='store_true', help="if flag present then no conversion but only check")
     args = parser.parse_args()
 
     if len(sys.argv) == 1:
@@ -132,7 +135,7 @@ def main():
         print(f"Converting the following user-specified files:")
         print('\t' + '\n\t'.join(args.filenames))
         for file_path in set(args.filenames):
-            md2nb(file_path)
+            md2nb(file_path, dry=args.dry_run)
 
     if args.dir:
         no_m2n_files = True
@@ -147,7 +150,7 @@ def main():
         for dir_path in set(args.dir):
             for file_ext in set(args.extension):
                 md2nb_all(directory=dir_path,
-                          extension=file_ext, recursive=args.recursive)
+                          extension=file_ext, recursive=args.recursive, dry=args.dry_run)
 
 
 if __name__ == '__main__':
