@@ -10,35 +10,38 @@ __author__ = "Qin Yu"
 __email__ = "qin.yu@embl.de"
 
 template = '''{
- "cells": [
-  {
-   "cell_type": "markdown",
-   "metadata": {},
-   "source":
-  }
- ],
- "metadata": {
-  "kernelspec": {
-   "display_name": "Python 3",
-   "language": "python",
-   "name": "python3"
-  },
-  "language_info": {
-   "codemirror_mode": {
-    "name": "ipython",
-    "version": 3
-   },
-   "file_extension": ".py",
-   "mimetype": "text/x-python",
-   "name": "python",
-   "nbconvert_exporter": "python",
-   "pygments_lexer": "ipython3",
-   "version": "3.7.8"
-  }
- },
- "nbformat": 4,
- "nbformat_minor": 4
+    "cells": [
+        {
+            "cell_type": "markdown",
+            "metadata": {},
+            "source":
+        }
+    ],
+    "metadata": {
+        "kernelspec": {
+            "display_name": "Python 3",
+            "language": "python",
+            "name": "python3"
+        },
+        "language_info": {
+            "codemirror_mode": {
+                "name": "ipython",
+                "version": 3
+            },
+            "file_extension": ".py",
+            "mimetype": "text/x-python",
+            "name": "python",
+            "nbconvert_exporter": "python",
+            "pygments_lexer": "ipython3",
+            "version": "3.7.8"
+        }
+    },
+    "nbformat": 4,
+    "nbformat_minor": 4
 }'''
+
+file_converted = []
+file_duplicate = []
 
 
 def is_file(string):
@@ -77,11 +80,18 @@ def md2nb(file_path, extension=None, dry=False):
     # `str()` prints strings with single quotes, while `json.dumps()` prints with double quotes.
     with open(file_path, 'r', encoding=detect_encoding(file_path)) as f_md:
         t_md = f_md.readlines()
-    t_nb = template[:78] + json.dumps(t_md) + template[78:]
+    t_nb = template[:113] + json.dumps(t_md) + template[113:]
     t_nb = json.loads(t_nb)  # 'load string'
 
     file_out_path = file_path + \
         '.ipynb' if extension == '' else file_path[:-len(extension)] + '.ipynb'
+
+    file_abs_path = os.path.abspath(file_path)
+    if file_abs_path in file_converted:
+        file_duplicate.append(file_abs_path)
+        return
+    else:
+        file_converted.append(file_abs_path)
     if not dry:
         with open(file_out_path, 'w') as f_nb:
             # Making JSON human readable (aka "pretty printing") is as easy as passing an integer value for the indent parameter
@@ -151,6 +161,11 @@ def main():
             for file_ext in set(args.extension):
                 md2nb_all(directory=dir_path,
                           extension=file_ext, recursive=args.recursive, dry=args.dry_run)
+
+    print(file_duplicate)
+    if file_duplicate != []:
+        print(
+            f"The following files are specified more than once: {file_duplicate}")
 
 
 if __name__ == '__main__':
