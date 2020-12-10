@@ -164,7 +164,8 @@ def main():
 
     print(file_duplicate)
     if file_duplicate != []:
-        print(f"The following files are specified twice: {file_duplicate}")
+        print(
+            f"The following files are specified more than once: {file_duplicate}")
 
 
 if __name__ == '__main__':
